@@ -10,4 +10,11 @@
         <maven.compiler.release>18</maven.compiler.release>
         <exec.mainClass>mx.itson.grillo.Grillo</exec.mainClass>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.12.1</version>
+        </dependency>
+    </dependencies>
 </project>
