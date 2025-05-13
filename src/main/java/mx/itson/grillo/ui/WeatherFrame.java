@@ -9,7 +9,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import javax.swing.table.DefaultTableModel;
+import mx.itson.grillo.entities.Forecast;
 import mx.itson.grillo.entities.Weather;
 
 /**
@@ -36,6 +38,8 @@ public class WeatherFrame extends javax.swing.JFrame {
 
         btnFile = new javax.swing.JButton();
         lblCity = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblForecast = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,6 +56,19 @@ public class WeatherFrame extends javax.swing.JFrame {
         lblCity.setForeground(new java.awt.Color(255, 255, 204));
         lblCity.setText("...");
 
+        tblForecast.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
+            },
+            new String [] {
+                "Date", "Min Temp °C", "Max Temp °C", "Min Temp °F", "Max Temp °F"
+            }
+        ));
+        jScrollPane1.setViewportView(tblForecast);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -60,8 +77,9 @@ public class WeatherFrame extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lblCity, javax.swing.GroupLayout.PREFERRED_SIZE, 418, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnFile, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(38, Short.MAX_VALUE))
+                    .addComponent(btnFile, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 573, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -70,7 +88,9 @@ public class WeatherFrame extends javax.swing.JFrame {
                 .addComponent(btnFile)
                 .addGap(18, 18, 18)
                 .addComponent(lblCity)
-                .addContainerGap(212, Short.MAX_VALUE))
+                .addGap(84, 84, 84)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         pack();
@@ -96,6 +116,26 @@ FileDialog fileDialog = new FileDialog(this, "Seleccionar Archivo", FileDialog.L
                         Weather w = Weather.deserialize(contenido);
                         
                         lblCity.setText(w.getCity());
+                        
+                                
+                        DefaultTableModel model = (DefaultTableModel) tblForecast.getModel();
+                        model.setRowCount(0);
+                        
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd 'de' MMMM 'del' yyyy");
+                        
+                        for(Forecast f : w.getForecast()){
+                            model.addRow(new Object[] {
+
+                            dateFormat.format(f.getDay()),
+                                    f.getMinTemperature() + "°C",
+                                    f.getMaxTemperature() + "°C",
+                                    Forecast.convertFarenheit(f.getMinTemperature()),
+                                    Forecast.convertFarenheit(f.getMaxTemperature())
+
+                            });
+                        
+                        
+                    }
                          
                         
                     } catch (IOException ex) {
@@ -144,6 +184,8 @@ FileDialog fileDialog = new FileDialog(this, "Seleccionar Archivo", FileDialog.L
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnFile;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblCity;
+    private javax.swing.JTable tblForecast;
     // End of variables declaration//GEN-END:variables
 }
